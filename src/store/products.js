@@ -9,8 +9,8 @@ const defaultProducts = {
 //action types
 
 const SET_PRODUCTS = "SET_PRODUCTS";
-const HIDE_PRODUCT = "HIDE_PRODUCT";
-const SHOW_PRODUCT = "SHOW_PRODUCT";
+// const HIDE_PRODUCT = "HIDE_PRODUCT";
+// const SHOW_PRODUCT = "SHOW_PRODUCT";
 
 //action creators
 
@@ -29,7 +29,7 @@ export const getProductData = () => async (dispatch) => {
       .get()
       .then(function (querySnapshot) {
         querySnapshot.forEach(function (doc) {
-          products.push(doc.data());
+          products.push({ ...doc.data(), active: true });
         });
       });
     dispatch(setProducts(products));
@@ -37,6 +37,8 @@ export const getProductData = () => async (dispatch) => {
     console.error(error);
   }
 };
+
+//reducer
 
 export default function (state = defaultProducts, action) {
   switch (action.type) {
