@@ -1,26 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import "./App.css";
+import Header from "./components/header";
+import { connect } from "react-redux";
+import { getProductData } from "./store/products";
 
-function App() {
+function App({ getProductData }) {
+  useEffect(() => {
+    getProductData();
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Header />
     </div>
   );
 }
 
-export default App;
+// const mapState = state => {
+
+// }
+
+const mapDispatch = (dispatch) => {
+  return {
+    getProductData: () => dispatch(getProductData()),
+  };
+};
+
+export default connect(null, mapDispatch)(App);
