@@ -1,0 +1,8 @@
+//action types
+
+const SET_CRITERIA = 'SET CRITERIA'
+const HIDE_CRITERIA = 'HIDE CRITERIA'
+const SHOW_CRITERIA = 'SHOW CRITERIA'
+
+
+
