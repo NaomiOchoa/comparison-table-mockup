@@ -1,5 +1,5 @@
 .product-legend {
-  width: 50%;
+  width: 100%;
 }
 
 ul {
@@ -9,7 +9,7 @@ ul {
 }
 
 ul li {
-  background: white;
+  background-color: white;
   margin: 5px;
   padding: 0em 1em 0em 1em;
   display: flex;
@@ -17,6 +17,11 @@ ul li {
   align-items: center;
 }
 
+ul li:hover {
+  box-shadow: 2px 2px 5px 1px #3d3d3d;
+}
+
 .uk-icon-button {
   color: white;
+  margin: 0.25em 0em 0.25em 0em;
 }

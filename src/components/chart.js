@@ -44,6 +44,8 @@ export default function Chart({ activeCriteria, activeProducts }) {
             model: prod.Model,
             ...prod[key],
             color: prod.color,
+            fullColor: prod.fullColor,
+            greyscale: prod.greyscale,
           });
         }
       }
@@ -126,6 +128,14 @@ export default function Chart({ activeCriteria, activeProducts }) {
       .attr("r", 5)
       .style("fill", function (d) {
         return d.color;
+      })
+      .style("opacity", function (d) {
+        console.log(d);
+        if (d.color === d.fullColor) {
+          return 1;
+        } else {
+          return 0.2;
+        }
       })
       .on("mouseover", function (e) {
         console.log(e.target.__data__);

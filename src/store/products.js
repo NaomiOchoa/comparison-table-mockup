@@ -12,6 +12,8 @@ const defaultProducts = {
 const SET_PRODUCTS = "SET_PRODUCTS";
 const HIDE_PRODUCT = "HIDE_PRODUCT";
 const SHOW_PRODUCT = "SHOW_PRODUCT";
+const HERO_PRODUCT = "HERO_PRODUCT";
+const UNSET_HERO = "UNSET_HERO";
 
 //action creators
 
@@ -28,6 +30,15 @@ export const hideProduct = (modelName) => ({
 export const showProduct = (modelName) => ({
   type: SHOW_PRODUCT,
   modelName,
+});
+
+export const heroProduct = (modelName) => ({
+  type: HERO_PRODUCT,
+  modelName,
+});
+
+export const unsetHero = () => ({
+  type: UNSET_HERO,
 });
 
 export const getProductData = () => async (dispatch) => {
@@ -50,7 +61,12 @@ export const getProductData = () => async (dispatch) => {
       .range([0, 1]);
 
     const productsWithColor = products.map((prod, i) => {
-      return { ...prod, color: d3.interpolateTurbo(convertColors(i)) };
+      return {
+        ...prod,
+        color: d3.interpolateTurbo(convertColors(i)),
+        fullColor: d3.interpolateTurbo(convertColors(i)),
+        greyscale: d3.interpolateGreys(convertColors(i)),
+      };
     });
 
     dispatch(setProducts(productsWithColor));
@@ -98,6 +114,26 @@ export default function (state = defaultProducts, action) {
         ...state,
         activeProducts: newActiveShow,
         allProducts: newAllShow,
+      };
+    case HERO_PRODUCT:
+      const newActiveHero = state.activeProducts.map((prod) => {
+        if (prod.Model !== action.modelName) {
+          return { ...prod, color: prod.greyscale };
+        } else {
+          return prod;
+        }
+      });
+      return {
+        ...state,
+        activeProducts: newActiveHero,
+      };
+    case UNSET_HERO:
+      const newUnsetHero = state.activeProducts.map((prod) => {
+        return { ...prod, color: prod.fullColor };
+      });
+      return {
+        ...state,
+        activeProducts: newUnsetHero,
       };
     default:
       return state;
