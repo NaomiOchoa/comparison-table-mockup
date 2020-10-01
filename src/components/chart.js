@@ -35,24 +35,15 @@ export default function Chart({ activeCriteria, activeProducts }) {
       .domain([0, 1, 2, 3])
       .range(["Untested", "Below Average", "Average", "Above Average"]);
 
-    const productNames = activeProducts.map((prod) => prod.Model);
-
-    var convertColors = d3
-      .scaleLinear()
-      .domain([0, productNames.length - 1])
-      .range([0, 1]);
-
     activeProducts.forEach((prod, i) => {
-      console.log(prod);
       for (let key in prod) {
         if (criteriaNames.includes(key) && typeof prod[key] === "object") {
-          console.log(convertColors(i));
           points.push({
             xPos: `${key} ${i}`,
             yPos: convertRating(prod[key].rating),
             model: prod.Model,
             ...prod[key],
-            color: d3.interpolateTurbo(convertColors(i)),
+            color: prod.color,
           });
         }
       }
@@ -62,6 +53,7 @@ export default function Chart({ activeCriteria, activeProducts }) {
   }, [activeCriteria, activeProducts]);
 
   function update(axisData, productData) {
+    console.log("update function product data", productData);
     const svg = d3.select(chartRef.current);
     const xAxis = d3.select(xAxisRef.current);
     const xValsAxis = d3.select(xAxisValuesRef.current);
@@ -118,10 +110,10 @@ export default function Chart({ activeCriteria, activeProducts }) {
 
     b.exit().remove();
 
-    svg
-      .selectAll("dot")
-      .data(productData)
-      .join("circle")
+    let u = svg.selectAll("circle").data(productData);
+    u.enter()
+      .append("circle")
+      .merge(u)
       .attr("cx", function (d) {
         return xValues(d.xPos) + xValues.bandwidth() / 2;
       })
@@ -149,6 +141,7 @@ export default function Chart({ activeCriteria, activeProducts }) {
       .on("mouseout", function () {
         return tooltip.style("visibility", "hidden");
       });
+    u.exit().remove();
   }
 
   useEffect(() => {

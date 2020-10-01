@@ -20,12 +20,10 @@ function App({
     getCriteriaData();
   }, []);
 
-  console.log(activeProducts);
-
   return (
     <div className="App">
       <Header />
-      <Legend activeProducts={activeProducts} allProducts={allProducts} />
+      <Legend allProducts={allProducts} />
       <Chart activeCriteria={activeCriteria} activeProducts={activeProducts} />
     </div>
   );

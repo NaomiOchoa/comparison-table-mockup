@@ -1,0 +1,22 @@
+.product-legend {
+  width: 50%;
+}
+
+ul {
+  background: #f5f5f5;
+  padding: 10px;
+  list-style-type: none;
+}
+
+ul li {
+  background: white;
+  margin: 5px;
+  padding: 0em 1em 0em 1em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.uk-icon-button {
+  color: white;
+}

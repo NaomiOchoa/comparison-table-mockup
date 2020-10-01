@@ -29,7 +29,7 @@ export const getCriteriaData = () => async (dispatch) => {
       .get()
       .then(function (querySnapshot) {
         querySnapshot.forEach(function (doc) {
-          criteria.push(doc.data());
+          criteria.push({ ...doc.data(), active: true });
         });
       });
     dispatch(setCriteria(criteria));
