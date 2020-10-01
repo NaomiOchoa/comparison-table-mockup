@@ -45,7 +45,7 @@ export default function (state = defaultCriteria, action) {
     case SET_CRITERIA:
       return {
         ...state,
-        activeCriteria: action.criteria,
+        activeCriteria: action.criteria.slice(0, 3),
         allCriteria: action.criteria,
       };
     default:

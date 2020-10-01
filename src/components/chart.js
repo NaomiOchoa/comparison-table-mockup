@@ -3,6 +3,7 @@ import * as d3 from "d3";
 
 export default function Chart({ activeCriteria, activeProducts }) {
   const chartRef = React.createRef();
+  const containerRef = React.createRef();
   const xAxisRef = React.createRef();
   const xAxisValuesRef = React.createRef();
   const yAxisRef = React.createRef();
@@ -11,8 +12,7 @@ export default function Chart({ activeCriteria, activeProducts }) {
   const margin = { top: 20, right: 5, bottom: 40, left: 80 };
   const [xLabels, setxLabels] = React.useState([]);
   const [xVals, setxVals] = React.useState([]);
-
-  console.log("activeProducts", activeProducts.length);
+  const [productDataPoints, setProductDataPoints] = React.useState([]);
 
   useEffect(() => {
     const criteriaNames = activeCriteria.map(function (d) {
@@ -27,13 +27,44 @@ export default function Chart({ activeCriteria, activeProducts }) {
       }
     });
     setxVals(criteriaNamesPlusVals);
+
+    const points = [];
+
+    var convertRating = d3
+      .scaleOrdinal()
+      .domain([0, 1, 2, 3])
+      .range(["Untested", "Below Average", "Average", "Above Average"]);
+
+    activeProducts.forEach((prod, i) => {
+      for (let key in prod) {
+        if (criteriaNames.includes(key) && typeof prod[key] === "object") {
+          points.push({
+            xPos: `${key} ${i}`,
+            yPos: convertRating(prod[key].rating),
+            model: prod.Model,
+            ...prod[key],
+          });
+        }
+      }
+    });
+    console.log(points);
+    setProductDataPoints(points);
   }, [activeCriteria]);
 
-  function update(data) {
+  function update(axisData, productData) {
     const svg = d3.select(chartRef.current);
     const xAxis = d3.select(xAxisRef.current);
     const xValsAxis = d3.select(xAxisValuesRef.current);
     const yAxis = d3.select(yAxisRef.current);
+
+    //tooltip setup
+    let tooltip = d3
+      .select(containerRef.current)
+      .append("div")
+      .style("position", "absolute")
+      .style("z-index", "10")
+      .style("visibility", "hidden")
+      .text("a simple tooltip");
 
     let x = d3
       .scaleBand()
@@ -59,16 +90,11 @@ export default function Chart({ activeCriteria, activeProducts }) {
 
     yAxis.call(d3.axisLeft(y));
 
-    // Create the u variable
-    var u = svg.selectAll("dot").data(data);
-
-    let b = svg.selectAll("rect").data(data);
-
-    console.log(x.bandwidth());
+    let b = svg.selectAll("rect").data(axisData);
 
     b.enter()
-      .append("rect") // Add a new rect for each new elements
-      .merge(b) // get the already existing elements as well
+      .append("rect")
+      .merge(b)
       .attr("x", function (d) {
         return x(d);
       })
@@ -79,41 +105,45 @@ export default function Chart({ activeCriteria, activeProducts }) {
       })
       .attr("fill", "#BFD8ED");
 
-    // If less group in the new dataset, I delete the ones not in use anymore
     b.exit().remove();
 
-    u.enter();
-    // .append("circle") // Add a new rect for each new elements
-    // .merge(u) // get the already existing elements as well
-    // .transition() // and apply changes to all of them
-    // .duration(1000)
-    // .attr("cx", function (d) {
-    //   return x(d.taskName);
-    // })
-    // .attr("cy", function (d) {
-    //   return y(d.seconds);
-    // })
-    // .attr("r", 5)
-    // .style("fill", function (d) {
-    //   return color(d.Species);
-    // });
-
-    // .attr("width", x.bandwidth())
-    // .attr("height", function (d) {
-    //   return height - margin.bottom - y(d.seconds);
-    // })
-    // .attr("fill", "#69b3a2");
-
-    // If less group in the new dataset, I delete the ones not in use anymore
-    u.exit().remove();
+    svg
+      .selectAll("dot")
+      .data(productData)
+      .join("circle")
+      .attr("cx", function (d) {
+        return xValues(d.xPos);
+      })
+      .attr("cy", function (d) {
+        return y(d.yPos) + margin.top + margin.bottom;
+      })
+      .attr("value", function (d) {
+        return d.model;
+      })
+      .attr("r", 5)
+      .style("fill", "#3AC5A0")
+      .on("mouseover", function (e) {
+        console.log(e.target.__data__);
+        return tooltip
+          .style("visibility", "visible")
+          .text(e.target.__data__.model);
+      })
+      .on("mousemove", function (event) {
+        return tooltip
+          .style("top", event.pageY - 10 + "px")
+          .style("left", event.pageX + 10 + "px");
+      })
+      .on("mouseout", function () {
+        return tooltip.style("visibility", "hidden");
+      });
   }
 
   useEffect(() => {
-    update(xLabels);
-  }, [xLabels, activeProducts]);
+    update(xLabels, productDataPoints);
+  }, [xLabels, productDataPoints]);
 
   return (
-    <div id="svg-container">
+    <div id="svg-container" ref={containerRef}>
       <svg width={width} height={height} ref={chartRef}>
         <g
           ref={xAxisRef}
