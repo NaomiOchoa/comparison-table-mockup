@@ -81,9 +81,10 @@ export default function Chart({ activeCriteria, activeProducts }) {
       .paddingInner(0.1);
 
     let y = d3
-      .scaleBand()
+      .scalePoint()
       .domain(["Untested", "Below Average", "Average", "Above Average"])
-      .range([height - margin.bottom, margin.top]);
+      .range([height - margin.bottom, margin.top])
+      .padding(0.2);
 
     xAxis.call(d3.axisBottom(x));
     xValsAxis.call(d3.axisBottom(xValues));
@@ -101,7 +102,7 @@ export default function Chart({ activeCriteria, activeProducts }) {
       .attr("y", margin.top)
       .attr("width", x.bandwidth())
       .attr("height", function (d) {
-        return height - margin.bottom - y("Above Average");
+        return height - margin.bottom - margin.top;
       })
       .attr("fill", "#BFD8ED");
 
@@ -112,10 +113,10 @@ export default function Chart({ activeCriteria, activeProducts }) {
       .data(productData)
       .join("circle")
       .attr("cx", function (d) {
-        return xValues(d.xPos);
+        return xValues(d.xPos) + xValues.bandwidth() / 2;
       })
       .attr("cy", function (d) {
-        return y(d.yPos) + margin.top + margin.bottom;
+        return y(d.yPos);
       })
       .attr("value", function (d) {
         return d.model;
