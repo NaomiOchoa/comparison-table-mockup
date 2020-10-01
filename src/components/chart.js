@@ -9,7 +9,7 @@ export default function Chart({ activeCriteria, activeProducts }) {
   const yAxisRef = React.createRef();
   const width = 1050;
   const height = 400;
-  const margin = { top: 20, right: 5, bottom: 40, left: 80 };
+  const margin = { top: 20, right: 5, bottom: 20, left: 80 };
   const [xLabels, setxLabels] = React.useState([]);
   const [xVals, setxVals] = React.useState([]);
   const [productDataPoints, setProductDataPoints] = React.useState([]);
@@ -35,21 +35,31 @@ export default function Chart({ activeCriteria, activeProducts }) {
       .domain([0, 1, 2, 3])
       .range(["Untested", "Below Average", "Average", "Above Average"]);
 
+    const productNames = activeProducts.map((prod) => prod.Model);
+
+    var convertColors = d3
+      .scaleLinear()
+      .domain([0, productNames.length - 1])
+      .range([0, 1]);
+
     activeProducts.forEach((prod, i) => {
+      console.log(prod);
       for (let key in prod) {
         if (criteriaNames.includes(key) && typeof prod[key] === "object") {
+          console.log(convertColors(i));
           points.push({
             xPos: `${key} ${i}`,
             yPos: convertRating(prod[key].rating),
             model: prod.Model,
             ...prod[key],
+            color: d3.interpolateTurbo(convertColors(i)),
           });
         }
       }
     });
     console.log(points);
     setProductDataPoints(points);
-  }, [activeCriteria]);
+  }, [activeCriteria, activeProducts]);
 
   function update(axisData, productData) {
     const svg = d3.select(chartRef.current);
@@ -77,7 +87,7 @@ export default function Chart({ activeCriteria, activeProducts }) {
       .scaleBand()
       .domain(xVals)
       .range([margin.left, width - margin.right])
-      .padding(0.1)
+      .padding(0.2)
       .paddingInner(0.1);
 
     let y = d3
@@ -104,7 +114,7 @@ export default function Chart({ activeCriteria, activeProducts }) {
       .attr("height", function (d) {
         return height - margin.bottom - margin.top;
       })
-      .attr("fill", "#BFD8ED");
+      .attr("fill", "#F5F5F5");
 
     b.exit().remove();
 
@@ -122,7 +132,9 @@ export default function Chart({ activeCriteria, activeProducts }) {
         return d.model;
       })
       .attr("r", 5)
-      .style("fill", "#3AC5A0")
+      .style("fill", function (d) {
+        return d.color;
+      })
       .on("mouseover", function (e) {
         console.log(e.target.__data__);
         return tooltip
@@ -150,10 +162,7 @@ export default function Chart({ activeCriteria, activeProducts }) {
           ref={xAxisRef}
           transform={`translate(0, ${height - margin.bottom})`}
         />
-        <g
-          ref={xAxisValuesRef}
-          transform={`translate(0, ${height - margin.bottom / 2})`}
-        />
+        <g ref={xAxisValuesRef} transform={`translate(0, ${height})`} />
         <g ref={yAxisRef} transform={`translate(${margin.left}, 0)`} />
       </svg>
     </div>
