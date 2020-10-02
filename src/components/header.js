@@ -5,8 +5,22 @@ export default function Header() {
     <header>
       <h1>Wirecutter Mockup</h1>
       <h2>
-        A visualization of Wirecutter's comparison table for: The Best Winter
-        Boots
+        A visualization of Wirecutter's{" "}
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://cdn.thewirecutter.com/wp-content/uploads/2020/05/Snow-Boots_-Comparison-Table-Traction-Test-Comparison-Table_-Snow-Boots.pdf"
+        >
+          comparison table
+        </a>{" "}
+        for:{" "}
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://www.nytimes.com/wirecutter/reviews/best-winter-boots-for-men-and-women/"
+        >
+          The Best Winter Boots
+        </a>
       </h2>
     </header>
   );

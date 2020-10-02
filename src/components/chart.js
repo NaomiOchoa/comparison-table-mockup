@@ -11,6 +11,7 @@ export default function Chart({ activeCriteria, activeProducts }) {
   const yAxisRef = React.createRef();
   const barsRef = React.createRef();
   const dotsRef = React.createRef();
+  const tooltipRef = React.createRef();
   const { height, width } = useChartSize();
   const margin = { top: 20, right: 5, bottom: 20, left: 80 };
   const [xLabels, setxLabels] = React.useState([]);
@@ -66,12 +67,11 @@ export default function Chart({ activeCriteria, activeProducts }) {
 
     //tooltip setup
     let tooltip = d3
-      .select(containerRef.current)
-      .append("div")
+      .select(tooltipRef.current)
       .style("position", "absolute")
       .style("z-index", "10")
       .style("visibility", "hidden")
-      .text("a simple tooltip");
+      .text("a tooltip");
 
     let x = d3
       .scaleBand()
@@ -140,14 +140,23 @@ export default function Chart({ activeCriteria, activeProducts }) {
         }
       })
       .on("mouseover", function (e) {
+        console.log("pageX: ", e.pageX, "width: ", width);
         return tooltip
           .style("visibility", "visible")
-          .text(e.target.__data__.model);
+          .html(
+            `<h4>${e.target.__data__.model}</h4> <p>${e.target.__data__.notes}</p>`
+          );
       })
       .on("mousemove", function (event) {
-        return tooltip
-          .style("top", event.pageY - 10 + "px")
-          .style("left", event.pageX + 10 + "px");
+        if (event.pageX > width / 2) {
+          return tooltip
+            .style("top", event.pageY + 10 + "px")
+            .style("left", event.pageX - 185 + "px");
+        } else {
+          return tooltip
+            .style("top", event.pageY + 10 + "px")
+            .style("left", event.pageX + 10 + "px");
+        }
       })
       .on("mouseout", function () {
         return tooltip.style("visibility", "hidden");
@@ -161,6 +170,7 @@ export default function Chart({ activeCriteria, activeProducts }) {
 
   return (
     <section id="svg-container" ref={containerRef}>
+      <div ref={tooltipRef} className={"tooltip"}></div>
       <svg width={width} height={height} ref={chartRef}>
         <g ref={barsRef} />
         <g ref={dotsRef} />
