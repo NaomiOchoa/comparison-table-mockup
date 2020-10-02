@@ -36,3 +36,25 @@
     transform: rotate(360deg);
   }
 }
+body {
+  font-family: "Libre Franklin", sans-serif;
+}
+
+h1 {
+  font-family: "Roboto Slab", serif;
+  font-size: 2.5em;
+}
+
+h2 {
+  font-family: "Libre Franklin", sans-serif;
+  text-decoration: underline;
+  text-decoration-color: #6085ff;
+}
+
+header {
+  margin: 2em;
+}
+
+section {
+  margin: 20px 10px 20px 10px;
+}

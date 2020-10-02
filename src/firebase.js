@@ -1,8 +1,5 @@
-import { firestore } from "firebase";
-
-const firebase = require("firebase");
+const firebase = require("firebase/app");
 require("firebase/firestore");
-
 
 firebase.initializeApp({
   apiKey: "AIzaSyC-OHKrwKQg3Y8IOB9EdMiABcYFF_1mnhk",
@@ -12,9 +9,9 @@ firebase.initializeApp({
   storageBucket: "comparison-table-mockup.appspot.com",
   messagingSenderId: "311621570505",
   appId: "1:311621570505:web:45ce2a534794920eee6218",
-  measurementId: "G-2WL6X8GDV2"
+  measurementId: "G-2WL6X8GDV2",
 });
 
 export const db = firebase.firestore();
 
-export default firebase
+export default firebase;

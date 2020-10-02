@@ -1,26 +1,56 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import "./App.css";
+import Header from "./components/header";
+import { connect } from "react-redux";
+import { getProductData } from "./store/products";
+import { getCriteriaData } from "./store/criteria";
+import Legend from "./components/legend";
+import Chart from "./components/chart";
+import Criteria from "./components/criteria";
+import { ChartSizeProvider } from "./utils/ChartSizeProvider";
 
-function App() {
+function App({
+  getProductData,
+  getCriteriaData,
+  activeProducts,
+  allProducts,
+  activeCriteria,
+  allCriteria,
+}) {
+  useEffect(() => {
+    getProductData();
+    getCriteriaData();
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Header />
+      <Legend allProducts={allProducts} />
+      <ChartSizeProvider>
+        <Chart
+          activeCriteria={activeCriteria}
+          activeProducts={activeProducts}
+        />
+      </ChartSizeProvider>
+      <Criteria allCriteria={allCriteria} />
     </div>
   );
 }
 
-export default App;
+const mapState = (state) => {
+  return {
+    activeProducts: state.products.activeProducts,
+    allProducts: state.products.allProducts,
+    activeCriteria: state.criteria.activeCriteria,
+    allCriteria: state.criteria.allCriteria,
+  };
+};
+
+const mapDispatch = (dispatch) => {
+  return {
+    getProductData: () => dispatch(getProductData()),
+    getCriteriaData: () => dispatch(getCriteriaData()),
+  };
+};
+
+export default connect(mapState, mapDispatch)(App);
