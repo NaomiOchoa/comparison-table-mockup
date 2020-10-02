@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import * as d3 from "d3";
 import { useChartSize } from "../utils/ChartSizeProvider";
+import "./chart.css";
 
 export default function Chart({ activeCriteria, activeProducts }) {
   const chartRef = React.createRef();
@@ -8,6 +9,8 @@ export default function Chart({ activeCriteria, activeProducts }) {
   const xAxisRef = React.createRef();
   const xAxisValuesRef = React.createRef();
   const yAxisRef = React.createRef();
+  const barsRef = React.createRef();
+  const dotsRef = React.createRef();
   const { height, width } = useChartSize();
   const margin = { top: 20, right: 5, bottom: 20, left: 80 };
   const [xLabels, setxLabels] = React.useState([]);
@@ -58,6 +61,8 @@ export default function Chart({ activeCriteria, activeProducts }) {
     const xAxis = d3.select(xAxisRef.current);
     const xValsAxis = d3.select(xAxisValuesRef.current);
     const yAxis = d3.select(yAxisRef.current);
+    const barsGroup = d3.select(barsRef.current);
+    const dotsGroup = d3.select(dotsRef.current);
 
     //tooltip setup
     let tooltip = d3
@@ -93,7 +98,7 @@ export default function Chart({ activeCriteria, activeProducts }) {
 
     yAxis.call(d3.axisLeft(y));
 
-    let b = svg.selectAll("rect").data(axisData);
+    let b = barsGroup.selectAll("rect").data(axisData);
 
     b.enter()
       .append("rect")
@@ -110,7 +115,7 @@ export default function Chart({ activeCriteria, activeProducts }) {
 
     b.exit().remove();
 
-    let u = svg.selectAll("circle").data(productData);
+    let u = dotsGroup.selectAll("circle").data(productData);
     u.enter()
       .append("circle")
       .merge(u)
@@ -157,6 +162,8 @@ export default function Chart({ activeCriteria, activeProducts }) {
   return (
     <section id="svg-container" ref={containerRef}>
       <svg width={width} height={height} ref={chartRef}>
+        <g ref={barsRef} />
+        <g ref={dotsRef} />
         <g
           ref={xAxisRef}
           transform={`translate(0, ${height - margin.bottom})`}

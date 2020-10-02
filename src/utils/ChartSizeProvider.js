@@ -5,14 +5,14 @@ const chartSizeContext = React.createContext(null);
 export const ChartSizeProvider = ({ children }) => {
   const aspect = 1050 / 400;
 
-  const [width, setWidth] = React.useState(window.innerWidth - 20);
+  const [width, setWidth] = React.useState(window.innerWidth - 40);
   const [height, setHeight] = React.useState(
-    Math.round((window.innerWidth - 20) / aspect)
+    Math.round((window.innerWidth - 40) / aspect)
   );
 
   const handleWindowResize = () => {
-    setWidth(window.innerWidth - 20);
-    setHeight(Math.round((window.innerWidth - 20) / aspect));
+    setWidth(window.innerWidth - 40);
+    setHeight(Math.round((window.innerWidth - 40) / aspect));
   };
 
   React.useEffect(() => {
