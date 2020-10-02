@@ -3,7 +3,12 @@ import * as d3 from "d3";
 import { useChartSize } from "../utils/ChartSizeProvider";
 import "./chart.css";
 
-export default function Chart({ activeCriteria, activeProducts }) {
+export default function Chart({
+  activeCriteria,
+  activeProducts,
+  priceHigh,
+  priceLow,
+}) {
   const chartRef = React.createRef();
   const containerRef = React.createRef();
   const xAxisRef = React.createRef();
@@ -51,6 +56,24 @@ export default function Chart({ activeCriteria, activeProducts }) {
             fullColor: prod.fullColor,
             greyscale: prod.greyscale,
           });
+        } else if (criteriaNames.includes(key) && key === "Price") {
+          points.push({
+            xPos: `${key} ${i}`,
+            value: prod[key],
+            model: prod.Model,
+            color: prod.color,
+            fullColor: prod.fullColor,
+            greyscale: prod.greyscale,
+          });
+        } else if (criteriaNames.includes(key) && key === "Sale Price") {
+          points.push({
+            xPos: `${key} ${i}`,
+            value: prod[key],
+            model: prod.Model,
+            color: prod.color,
+            fullColor: prod.fullColor,
+            greyscale: prod.greyscale,
+          });
         }
       }
     });
@@ -93,6 +116,11 @@ export default function Chart({ activeCriteria, activeProducts }) {
       .range([height - margin.bottom, margin.top])
       .padding(0.2);
 
+    let priceY = d3
+      .scaleLinear()
+      .domain([priceLow, priceHigh])
+      .range([height - margin.bottom - 30, margin.top + 30]);
+
     xAxis.call(d3.axisBottom(x));
     xValsAxis.call(d3.axisBottom(xValues));
 
@@ -123,12 +151,16 @@ export default function Chart({ activeCriteria, activeProducts }) {
         return xValues(d.xPos) + xValues.bandwidth() / 2;
       })
       .attr("cy", function (d) {
-        return y(d.yPos);
+        if (d.yPos) {
+          return y(d.yPos);
+        } else {
+          return priceY(d.value);
+        }
       })
       .attr("value", function (d) {
         return d.model;
       })
-      .attr("r", 5)
+      .attr("r", 7)
       .style("fill", function (d) {
         return d.color;
       })
@@ -141,11 +173,14 @@ export default function Chart({ activeCriteria, activeProducts }) {
       })
       .on("mouseover", function (e) {
         console.log("pageX: ", e.pageX, "width: ", width);
-        return tooltip
-          .style("visibility", "visible")
-          .html(
-            `<h4>${e.target.__data__.model}</h4> <p>${e.target.__data__.notes}</p>`
-          );
+        return tooltip.style("visibility", "visible").html(
+          `<h4>${e.target.__data__.model}</h4>
+             <p>${
+               e.target.__data__.notes
+                 ? e.target.__data__.notes
+                 : "$" + e.target.__data__.value
+             }</p>`
+        );
       })
       .on("mousemove", function (event) {
         if (event.pageX > width / 2) {

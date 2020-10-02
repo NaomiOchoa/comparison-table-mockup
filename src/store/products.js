@@ -5,6 +5,8 @@ import * as d3 from "d3";
 const defaultProducts = {
   activeProducts: [],
   allProducts: [],
+  priceLow: 0,
+  priceHigh: 0,
 };
 
 //action types
@@ -17,9 +19,11 @@ const UNSET_HERO = "UNSET_HERO";
 
 //action creators
 
-const setProducts = (products) => ({
+const setProducts = (products, low, high) => ({
   type: SET_PRODUCTS,
   products,
+  low,
+  high,
 });
 
 export const hideProduct = (modelName) => ({
@@ -69,7 +73,19 @@ export const getProductData = () => async (dispatch) => {
       };
     });
 
-    dispatch(setProducts(productsWithColor));
+    let low = productsWithColor[0]["Sale Price"];
+    let high = productsWithColor[0]["Price"];
+
+    productsWithColor.forEach((prod) => {
+      if (prod["Sale Price"] < low) {
+        low = prod["Sale Price"];
+      }
+      if (prod["Price"] > high) {
+        high = prod["Price"];
+      }
+    });
+
+    dispatch(setProducts(productsWithColor, low, high));
   } catch (error) {
     console.error(error);
   }
@@ -84,6 +100,8 @@ export default function (state = defaultProducts, action) {
         ...state,
         activeProducts: action.products,
         allProducts: action.products,
+        priceLow: action.low,
+        priceHigh: action.high,
       };
     case HIDE_PRODUCT:
       const newActive = state.activeProducts.filter(

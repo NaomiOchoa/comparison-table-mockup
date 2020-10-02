@@ -16,6 +16,8 @@ function App({
   allProducts,
   activeCriteria,
   allCriteria,
+  priceHigh,
+  priceLow,
 }) {
   useEffect(() => {
     getProductData();
@@ -30,6 +32,8 @@ function App({
         <Chart
           activeCriteria={activeCriteria}
           activeProducts={activeProducts}
+          priceHigh={priceHigh}
+          priceLow={priceLow}
         />
       </ChartSizeProvider>
       <Criteria allCriteria={allCriteria} />
@@ -43,6 +47,8 @@ const mapState = (state) => {
     allProducts: state.products.allProducts,
     activeCriteria: state.criteria.activeCriteria,
     allCriteria: state.criteria.allCriteria,
+    priceHigh: state.products.priceHigh,
+    priceLow: state.products.priceLow,
   };
 };
 
