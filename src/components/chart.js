@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import * as d3 from "d3";
+import { useChartSize } from "../utils/ChartSizeProvider";
 
 export default function Chart({ activeCriteria, activeProducts }) {
   const chartRef = React.createRef();
@@ -7,8 +8,7 @@ export default function Chart({ activeCriteria, activeProducts }) {
   const xAxisRef = React.createRef();
   const xAxisValuesRef = React.createRef();
   const yAxisRef = React.createRef();
-  const width = 1050;
-  const height = 400;
+  const { height, width } = useChartSize();
   const margin = { top: 20, right: 5, bottom: 20, left: 80 };
   const [xLabels, setxLabels] = React.useState([]);
   const [xVals, setxVals] = React.useState([]);
@@ -155,7 +155,7 @@ export default function Chart({ activeCriteria, activeProducts }) {
   }, [xLabels, productDataPoints]);
 
   return (
-    <div id="svg-container" ref={containerRef}>
+    <section id="svg-container" ref={containerRef}>
       <svg width={width} height={height} ref={chartRef}>
         <g
           ref={xAxisRef}
@@ -164,6 +164,6 @@ export default function Chart({ activeCriteria, activeProducts }) {
         <g ref={xAxisValuesRef} transform={`translate(0, ${height})`} />
         <g ref={yAxisRef} transform={`translate(${margin.left}, 0)`} />
       </svg>
-    </div>
+    </section>
   );
 }

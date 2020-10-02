@@ -7,6 +7,7 @@ import { getCriteriaData } from "./store/criteria";
 import Legend from "./components/legend";
 import Chart from "./components/chart";
 import Criteria from "./components/criteria";
+import { ChartSizeProvider } from "./utils/ChartSizeProvider";
 
 function App({
   getProductData,
@@ -25,7 +26,12 @@ function App({
     <div className="App">
       <Header />
       <Legend allProducts={allProducts} />
-      <Chart activeCriteria={activeCriteria} activeProducts={activeProducts} />
+      <ChartSizeProvider>
+        <Chart
+          activeCriteria={activeCriteria}
+          activeProducts={activeProducts}
+        />
+      </ChartSizeProvider>
       <Criteria allCriteria={allCriteria} />
     </div>
   );

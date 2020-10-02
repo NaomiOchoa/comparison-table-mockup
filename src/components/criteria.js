@@ -14,7 +14,7 @@ export default function Criteria({ allCriteria }) {
       <Accordion as="ul" className="criteria-list">
         {allCriteria.map((criteria, i) => {
           return (
-            <React.Fragment>
+            <React.Fragment key={criteria["criteria-name"]}>
               <li className="criteria-list-item">
                 <Accordion.Title
                   active={activeIndex === i}

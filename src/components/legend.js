@@ -7,7 +7,7 @@ import {
   heroProduct,
   unsetHero,
 } from "../store/products";
-import { Button, Icon } from "semantic-ui-react";
+import { Button } from "semantic-ui-react";
 
 function Legend({
   allProducts,
