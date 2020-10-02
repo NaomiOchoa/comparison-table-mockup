@@ -1,0 +1,36 @@
+.title.criteria-title-area {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.criteria-list {
+  padding: 10px;
+  list-style-type: none;
+}
+
+.criteria-list > li {
+  margin: 0px 5px 0px 5px;
+  padding: 0em 1em 0em 1em;
+}
+
+.criteria-title {
+  margin: 0.2em;
+  font-family: "Roboto Slab", serif;
+}
+
+.criteria-description {
+  text-align: left;
+  padding-left: 2.5em;
+}
+
+.criteria-description > h4 {
+  font-family: "Libre Franklin", sans-serif;
+  margin-top: 1em;
+  margin-bottom: 0.25em;
+}
+
+.criteria-section {
+  border-top: 3px solid #6085ff;
+  margin: 20px 10px 10px 20px;
+}

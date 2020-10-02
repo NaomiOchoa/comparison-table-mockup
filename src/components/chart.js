@@ -50,12 +50,10 @@ export default function Chart({ activeCriteria, activeProducts }) {
         }
       }
     });
-    console.log(points);
     setProductDataPoints(points);
   }, [activeCriteria, activeProducts]);
 
   function update(axisData, productData) {
-    console.log("update function product data", productData);
     const svg = d3.select(chartRef.current);
     const xAxis = d3.select(xAxisRef.current);
     const xValsAxis = d3.select(xAxisValuesRef.current);
@@ -130,7 +128,6 @@ export default function Chart({ activeCriteria, activeProducts }) {
         return d.color;
       })
       .style("opacity", function (d) {
-        console.log(d);
         if (d.color === d.fullColor) {
           return 1;
         } else {
@@ -138,7 +135,6 @@ export default function Chart({ activeCriteria, activeProducts }) {
         }
       })
       .on("mouseover", function (e) {
-        console.log(e.target.__data__);
         return tooltip
           .style("visibility", "visible")
           .text(e.target.__data__.model);

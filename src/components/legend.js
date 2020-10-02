@@ -7,6 +7,7 @@ import {
   heroProduct,
   unsetHero,
 } from "../store/products";
+import { Button, Icon } from "semantic-ui-react";
 
 function Legend({
   allProducts,
@@ -29,31 +30,33 @@ function Legend({
 
   return (
     <div className="product-legend">
-      <ul>
+      <ul className="legend-list">
         {allProducts.map((product) => {
           return (
             <li
               key={product.Model}
               onMouseEnter={() => enterEffect(product)}
               onMouseLeave={leaveEffect}
+              className="legend"
             >
               {product.Model}
               {product.active ? (
-                <button
-                  className="uk-icon-button"
-                  uk-icon="minus-circle"
+                <Button
+                  circular
+                  className="legend-icon-button"
+                  icon="eye slash outline"
                   style={{
                     backgroundColor: product.color,
-                    opacity: 1,
                   }}
                   onClick={() => hideProduct(product.Model)}
-                ></button>
+                />
               ) : (
-                <button
-                  className="uk-icon-button"
-                  uk-icon="plus-circle"
+                <Button
+                  className="legend-icon-button"
+                  icon="eye"
+                  circular
                   onClick={() => showProduct(product.Model)}
-                ></button>
+                />
               )}
             </li>
           );

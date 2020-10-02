@@ -6,6 +6,7 @@ import { getProductData } from "./store/products";
 import { getCriteriaData } from "./store/criteria";
 import Legend from "./components/legend";
 import Chart from "./components/chart";
+import Criteria from "./components/criteria";
 
 function App({
   getProductData,
@@ -25,6 +26,7 @@ function App({
       <Header />
       <Legend allProducts={allProducts} />
       <Chart activeCriteria={activeCriteria} activeProducts={activeProducts} />
+      <Criteria allCriteria={allCriteria} />
     </div>
   );
 }
