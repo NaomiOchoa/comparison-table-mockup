@@ -33,6 +33,7 @@ export const showCriteria = (criteriaName) => ({
 export const getCriteriaData = () => async (dispatch) => {
   try {
     let criteria = [];
+    let prices = [];
     await db
       .collection("snow-boots")
       .doc("info")
@@ -40,10 +41,17 @@ export const getCriteriaData = () => async (dispatch) => {
       .get()
       .then(function (querySnapshot) {
         querySnapshot.forEach(function (doc) {
-          criteria.push({ ...doc.data(), active: true });
+          if (
+            doc.data()["criteria-name"] === "Price" ||
+            doc.data()["criteria-name"] === "Sale Price"
+          ) {
+            prices.push({ ...doc.data(), active: true });
+          } else {
+            criteria.push({ ...doc.data(), active: true });
+          }
         });
       });
-    dispatch(setCriteria(criteria));
+    dispatch(setCriteria([...criteria, ...prices]));
   } catch (error) {
     console.error(error);
   }
