@@ -8,6 +8,7 @@ import Legend from "./components/legend";
 import Chart from "./components/chart";
 import Criteria from "./components/criteria";
 import { ChartSizeProvider } from "./utils/ChartSizeProvider";
+import Footer from "./components/footer";
 
 function App({
   getProductData,
@@ -37,6 +38,7 @@ function App({
         />
       </ChartSizeProvider>
       <Criteria allCriteria={allCriteria} />
+      <Footer />
     </div>
   );
 }
