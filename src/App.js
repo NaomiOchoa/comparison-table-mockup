@@ -28,7 +28,6 @@ function App({
   return (
     <div className="App">
       <Header />
-      <Legend allProducts={allProducts} />
       <ChartSizeProvider>
         <Chart
           activeCriteria={activeCriteria}
@@ -37,6 +36,7 @@ function App({
           priceLow={priceLow}
         />
       </ChartSizeProvider>
+      <Legend allProducts={allProducts} />
       <Criteria allCriteria={allCriteria} />
       <Footer />
     </div>

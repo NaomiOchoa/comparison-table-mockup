@@ -22,6 +22,7 @@ export default function Chart({
   const [xLabels, setxLabels] = React.useState([]);
   const [xVals, setxVals] = React.useState([]);
   const [productDataPoints, setProductDataPoints] = React.useState([]);
+  const [numProducts, setNumProducts] = React.useState();
 
   useEffect(() => {
     const criteriaNames = activeCriteria.map(function (d) {
@@ -44,6 +45,8 @@ export default function Chart({
       .domain([0, 1, 2, 3])
       .range(["Untested", "Below Average", "Average", "Above Average"]);
 
+    setNumProducts(activeProducts.length);
+
     activeProducts.forEach((prod, i) => {
       for (let key in prod) {
         if (criteriaNames.includes(key) && typeof prod[key] === "object") {
@@ -52,27 +55,33 @@ export default function Chart({
             yPos: convertRating(prod[key].rating),
             model: prod.Model,
             ...prod[key],
+            criteria: key,
             color: prod.color,
             fullColor: prod.fullColor,
             greyscale: prod.greyscale,
+            offset: activeProducts.length - i,
           });
         } else if (criteriaNames.includes(key) && key === "Price") {
           points.push({
             xPos: `${key} ${i}`,
             value: prod[key],
             model: prod.Model,
+            criteria: key,
             color: prod.color,
             fullColor: prod.fullColor,
             greyscale: prod.greyscale,
+            offset: activeProducts.length - i,
           });
         } else if (criteriaNames.includes(key) && key === "Sale Price") {
           points.push({
             xPos: `${key} ${i}`,
             value: prod[key],
+            criteria: key,
             model: prod.Model,
             color: prod.color,
             fullColor: prod.fullColor,
             greyscale: prod.greyscale,
+            offset: activeProducts.length - i,
           });
         }
       }
@@ -148,7 +157,11 @@ export default function Chart({
       .append("circle")
       .merge(u)
       .attr("cx", function (d) {
-        return xValues(d.xPos) + xValues.bandwidth() / 2;
+        return (
+          x(d.criteria) +
+          x.bandwidth() -
+          (x.bandwidth() / (numProducts + 1)) * d.offset
+        );
       })
       .attr("cy", function (d) {
         if (d.yPos) {
