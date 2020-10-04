@@ -30,13 +30,13 @@ function App({
       <Header />
       <div className="main-content-block">
         <ChartSizeProvider>
-          <Legend allProducts={allProducts} />
           <Chart
             activeCriteria={activeCriteria}
             activeProducts={activeProducts}
             priceHigh={priceHigh}
             priceLow={priceLow}
           />
+          <Legend allProducts={allProducts} />
         </ChartSizeProvider>
       </div>
       <Criteria allCriteria={allCriteria} />

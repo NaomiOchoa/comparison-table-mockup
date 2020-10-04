@@ -95,8 +95,10 @@ a:focus.header-link {
   color: white;
 }
 
-.main-content-block {
-  display: flex;
-  padding: 20px;
-  align-items: center;
+@media only screen and (min-width: 900px) {
+  .main-content-block {
+    display: flex;
+    padding: 20px;
+    align-items: center;
+  }
 }

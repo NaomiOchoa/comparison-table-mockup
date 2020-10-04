@@ -22,7 +22,7 @@ function Chart({
   const dotsRef = React.createRef();
   const tooltipRef = React.createRef();
   const { height, width } = useChartSize();
-  const margin = { top: 20, right: 5, bottom: 20, left: 80 };
+  const margin = { top: 20, right: 5, bottom: 50, left: 80 };
   const [xLabels, setxLabels] = React.useState([]);
   const [xVals, setxVals] = React.useState([]);
   const [productDataPoints, setProductDataPoints] = React.useState([]);
@@ -91,7 +91,7 @@ function Chart({
       }
     });
     setProductDataPoints(points);
-  }, [activeCriteria, activeProducts]);
+  }, [activeCriteria, activeProducts, height, width]);
 
   function update(axisData, productData) {
     const svg = d3.select(chartRef.current);
@@ -134,8 +134,16 @@ function Chart({
       .domain([priceLow, priceHigh])
       .range([height - margin.bottom - 30, margin.top + 30]);
 
-    xAxis.call(d3.axisBottom(x));
-    xValsAxis.call(d3.axisBottom(xValues));
+    xAxis
+      .call(d3.axisBottom(x))
+      .selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-.25em")
+      .attr("dy", ".5em")
+      .attr("transform", function (d) {
+        return "rotate(-25)";
+      });
+    // xValsAxis.call(d3.axisBottom(xValues));
 
     yAxis.call(d3.axisLeft(y));
 
@@ -177,7 +185,9 @@ function Chart({
       .attr("value", function (d) {
         return d.model;
       })
-      .attr("r", 7)
+      .attr("r", function (d) {
+        return 7 * (width / 1050);
+      })
       .style("fill", function (d) {
         return d.color;
       })
@@ -217,7 +227,7 @@ function Chart({
 
   useEffect(() => {
     update(xLabels, productDataPoints);
-  }, [xLabels, productDataPoints]);
+  }, [xLabels, productDataPoints, height, width]);
 
   return (
     <section id="svg-container" ref={containerRef}>
