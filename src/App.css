@@ -55,6 +55,50 @@ header {
   margin: 2em;
 }
 
+footer {
+  background-color: #333;
+  color: white;
+  padding: 2em 3em 2em 3em;
+}
+
+footer > p {
+  margin: 1em;
+}
+
+a.footer-link {
+  color: white;
+  text-decoration: underline;
+  text-decoration-color: #6085ff;
+}
+
+a:active.footer-link,
+a:hover.footer-link,
+a:focus.footer-link {
+  background-color: #6085ff;
+  color: white;
+}
+
 section {
-  margin: 20px 10px 20px 10px;
+  margin: 20px 20px 20px 20px;
+}
+
+a.header-link {
+  color: #ef3737;
+  text-decoration: underline;
+  text-decoration-color: #6085ff;
+}
+
+a:active.header-link,
+a:hover.header-link,
+a:focus.header-link {
+  background-color: #ef3737;
+  color: white;
+}
+
+@media only screen and (min-width: 900px) {
+  .main-content-block {
+    display: flex;
+    padding: 20px;
+    align-items: center;
+  }
 }

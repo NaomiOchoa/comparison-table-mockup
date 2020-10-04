@@ -1,18 +1,32 @@
 import React, { useEffect } from "react";
+import { connect } from "react-redux";
 import * as d3 from "d3";
 import { useChartSize } from "../utils/ChartSizeProvider";
+import { heroProduct, unsetHero } from "../store/products";
+import "./chart.css";
 
-export default function Chart({ activeCriteria, activeProducts }) {
+function Chart({
+  activeCriteria,
+  activeProducts,
+  priceHigh,
+  priceLow,
+  heroProduct,
+  unsetHero,
+}) {
   const chartRef = React.createRef();
   const containerRef = React.createRef();
   const xAxisRef = React.createRef();
   const xAxisValuesRef = React.createRef();
   const yAxisRef = React.createRef();
+  const barsRef = React.createRef();
+  const dotsRef = React.createRef();
+  const tooltipRef = React.createRef();
   const { height, width } = useChartSize();
-  const margin = { top: 20, right: 5, bottom: 20, left: 80 };
+  const margin = { top: 20, right: 5, bottom: 50, left: 80 };
   const [xLabels, setxLabels] = React.useState([]);
   const [xVals, setxVals] = React.useState([]);
   const [productDataPoints, setProductDataPoints] = React.useState([]);
+  const [numProducts, setNumProducts] = React.useState();
 
   useEffect(() => {
     const criteriaNames = activeCriteria.map(function (d) {
@@ -35,6 +49,8 @@ export default function Chart({ activeCriteria, activeProducts }) {
       .domain([0, 1, 2, 3])
       .range(["Untested", "Below Average", "Average", "Above Average"]);
 
+    setNumProducts(activeProducts.length);
+
     activeProducts.forEach((prod, i) => {
       for (let key in prod) {
         if (criteriaNames.includes(key) && typeof prod[key] === "object") {
@@ -43,30 +59,55 @@ export default function Chart({ activeCriteria, activeProducts }) {
             yPos: convertRating(prod[key].rating),
             model: prod.Model,
             ...prod[key],
+            criteria: key,
             color: prod.color,
             fullColor: prod.fullColor,
             greyscale: prod.greyscale,
+            offset: activeProducts.length - i,
+          });
+        } else if (criteriaNames.includes(key) && key === "Price") {
+          points.push({
+            xPos: `${key} ${i}`,
+            value: prod[key],
+            model: prod.Model,
+            criteria: key,
+            color: prod.color,
+            fullColor: prod.fullColor,
+            greyscale: prod.greyscale,
+            offset: activeProducts.length - i,
+          });
+        } else if (criteriaNames.includes(key) && key === "Sale Price") {
+          points.push({
+            xPos: `${key} ${i}`,
+            value: prod[key],
+            criteria: key,
+            model: prod.Model,
+            color: prod.color,
+            fullColor: prod.fullColor,
+            greyscale: prod.greyscale,
+            offset: activeProducts.length - i,
           });
         }
       }
     });
     setProductDataPoints(points);
-  }, [activeCriteria, activeProducts]);
+  }, [activeCriteria, activeProducts, height, width]);
 
   function update(axisData, productData) {
     const svg = d3.select(chartRef.current);
     const xAxis = d3.select(xAxisRef.current);
     const xValsAxis = d3.select(xAxisValuesRef.current);
     const yAxis = d3.select(yAxisRef.current);
+    const barsGroup = d3.select(barsRef.current);
+    const dotsGroup = d3.select(dotsRef.current);
 
     //tooltip setup
     let tooltip = d3
-      .select(containerRef.current)
-      .append("div")
+      .select(tooltipRef.current)
       .style("position", "absolute")
       .style("z-index", "10")
       .style("visibility", "hidden")
-      .text("a simple tooltip");
+      .text("a tooltip");
 
     let x = d3
       .scaleBand()
@@ -88,12 +129,25 @@ export default function Chart({ activeCriteria, activeProducts }) {
       .range([height - margin.bottom, margin.top])
       .padding(0.2);
 
-    xAxis.call(d3.axisBottom(x));
-    xValsAxis.call(d3.axisBottom(xValues));
+    let priceY = d3
+      .scaleLinear()
+      .domain([priceLow, priceHigh])
+      .range([height - margin.bottom - 30, margin.top + 30]);
+
+    xAxis
+      .call(d3.axisBottom(x))
+      .selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-.25em")
+      .attr("dy", ".5em")
+      .attr("transform", function (d) {
+        return "rotate(-25)";
+      });
+    // xValsAxis.call(d3.axisBottom(xValues));
 
     yAxis.call(d3.axisLeft(y));
 
-    let b = svg.selectAll("rect").data(axisData);
+    let b = barsGroup.selectAll("rect").data(axisData);
 
     b.enter()
       .append("rect")
@@ -110,20 +164,30 @@ export default function Chart({ activeCriteria, activeProducts }) {
 
     b.exit().remove();
 
-    let u = svg.selectAll("circle").data(productData);
+    let u = dotsGroup.selectAll("circle").data(productData);
     u.enter()
       .append("circle")
       .merge(u)
       .attr("cx", function (d) {
-        return xValues(d.xPos) + xValues.bandwidth() / 2;
+        return (
+          x(d.criteria) +
+          x.bandwidth() -
+          (x.bandwidth() / (numProducts + 1)) * d.offset
+        );
       })
       .attr("cy", function (d) {
-        return y(d.yPos);
+        if (d.yPos) {
+          return y(d.yPos);
+        } else {
+          return priceY(d.value);
+        }
       })
       .attr("value", function (d) {
         return d.model;
       })
-      .attr("r", 5)
+      .attr("r", function (d) {
+        return 7 * (width / 1050);
+      })
       .style("fill", function (d) {
         return d.color;
       })
@@ -135,14 +199,25 @@ export default function Chart({ activeCriteria, activeProducts }) {
         }
       })
       .on("mouseover", function (e) {
-        return tooltip
-          .style("visibility", "visible")
-          .text(e.target.__data__.model);
+        return tooltip.style("visibility", "visible").html(
+          `<h4>${e.target.__data__.model}</h4>
+          <p>${
+            e.target.__data__.notes
+              ? e.target.__data__.notes
+              : "$" + e.target.__data__.value
+          }</p>`
+        );
       })
       .on("mousemove", function (event) {
-        return tooltip
-          .style("top", event.pageY - 10 + "px")
-          .style("left", event.pageX + 10 + "px");
+        if (event.pageX > width / 2) {
+          return tooltip
+            .style("top", event.pageY + 10 + "px")
+            .style("left", event.pageX - 185 + "px");
+        } else {
+          return tooltip
+            .style("top", event.pageY + 10 + "px")
+            .style("left", event.pageX + 10 + "px");
+        }
       })
       .on("mouseout", function () {
         return tooltip.style("visibility", "hidden");
@@ -152,11 +227,14 @@ export default function Chart({ activeCriteria, activeProducts }) {
 
   useEffect(() => {
     update(xLabels, productDataPoints);
-  }, [xLabels, productDataPoints]);
+  }, [xLabels, productDataPoints, height, width]);
 
   return (
     <section id="svg-container" ref={containerRef}>
+      <div ref={tooltipRef} className={"tooltip"}></div>
       <svg width={width} height={height} ref={chartRef}>
+        <g ref={barsRef} />
+        <g ref={dotsRef} />
         <g
           ref={xAxisRef}
           transform={`translate(0, ${height - margin.bottom})`}
@@ -167,3 +245,12 @@ export default function Chart({ activeCriteria, activeProducts }) {
     </section>
   );
 }
+
+const mapDispatch = (dispatch) => {
+  return {
+    heroProduct: (modelName) => dispatch(heroProduct(modelName)),
+    unsetHero: () => dispatch(unsetHero()),
+  };
+};
+
+export default connect(null, mapDispatch)(Chart);

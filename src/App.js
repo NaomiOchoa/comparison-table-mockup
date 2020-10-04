@@ -8,6 +8,7 @@ import Legend from "./components/legend";
 import Chart from "./components/chart";
 import Criteria from "./components/criteria";
 import { ChartSizeProvider } from "./utils/ChartSizeProvider";
+import Footer from "./components/footer";
 
 function App({
   getProductData,
@@ -16,6 +17,8 @@ function App({
   allProducts,
   activeCriteria,
   allCriteria,
+  priceHigh,
+  priceLow,
 }) {
   useEffect(() => {
     getProductData();
@@ -25,14 +28,19 @@ function App({
   return (
     <div className="App">
       <Header />
-      <Legend allProducts={allProducts} />
-      <ChartSizeProvider>
-        <Chart
-          activeCriteria={activeCriteria}
-          activeProducts={activeProducts}
-        />
-      </ChartSizeProvider>
+      <div className="main-content-block">
+        <ChartSizeProvider>
+          <Chart
+            activeCriteria={activeCriteria}
+            activeProducts={activeProducts}
+            priceHigh={priceHigh}
+            priceLow={priceLow}
+          />
+          <Legend allProducts={allProducts} />
+        </ChartSizeProvider>
+      </div>
       <Criteria allCriteria={allCriteria} />
+      <Footer />
     </div>
   );
 }
@@ -43,6 +51,8 @@ const mapState = (state) => {
     allProducts: state.products.allProducts,
     activeCriteria: state.criteria.activeCriteria,
     allCriteria: state.criteria.allCriteria,
+    priceHigh: state.products.priceHigh,
+    priceLow: state.products.priceLow,
   };
 };
 

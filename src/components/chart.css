@@ -1,0 +1,12 @@
+#svg-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* margin: auto; */
+  /* overflow-x: scroll; */
+}
+
+.tooltip {
+  width: 175px;
+  background-color: white;
+}

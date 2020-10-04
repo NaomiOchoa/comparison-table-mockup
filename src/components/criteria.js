@@ -1,11 +1,14 @@
 import React from "react";
+import { connect } from "react-redux";
+import { hideCriteria, showCriteria } from "../store/criteria";
 import { Accordion, Button, Icon, Divider } from "semantic-ui-react";
 import "./criteria.css";
 
-export default function Criteria({ allCriteria }) {
+function Criteria({ allCriteria, hideCriteria, showCriteria }) {
   const [activeIndex, setActiveIndex] = React.useState(-1);
 
-  function handleClick(idx) {
+  function handleClick(e, idx) {
+    if (e.target.type === "submit") return;
     activeIndex === idx ? setActiveIndex(-1) : setActiveIndex(idx);
   }
 
@@ -19,7 +22,7 @@ export default function Criteria({ allCriteria }) {
                 <Accordion.Title
                   active={activeIndex === i}
                   index={i}
-                  onClick={() => handleClick(i)}
+                  onClick={(e) => handleClick(e, i)}
                   className="criteria-title-area"
                 >
                   <Icon name="dropdown" size="big" />
@@ -27,11 +30,19 @@ export default function Criteria({ allCriteria }) {
                     {criteria["criteria-name"]}
                   </h3>
                   {criteria.active ? (
-                    <Button basic className="hide-show-button">
+                    <Button
+                      basic
+                      className="hide-show-button"
+                      onClick={() => hideCriteria(criteria["criteria-name"])}
+                    >
                       Hide
                     </Button>
                   ) : (
-                    <Button basic className="hide-show-button">
+                    <Button
+                      basic
+                      className="hide-show-button"
+                      onClick={() => showCriteria(criteria["criteria-name"])}
+                    >
                       Show
                     </Button>
                   )}
@@ -54,3 +65,12 @@ export default function Criteria({ allCriteria }) {
     </section>
   );
 }
+
+const mapDispatch = (dispatch) => {
+  return {
+    hideCriteria: (criteriaName) => dispatch(hideCriteria(criteriaName)),
+    showCriteria: (criteriaName) => dispatch(showCriteria(criteriaName)),
+  };
+};
+
+export default connect(null, mapDispatch)(Criteria);
