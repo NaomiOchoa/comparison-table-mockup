@@ -94,3 +94,9 @@ a:focus.header-link {
   background-color: #ef3737;
   color: white;
 }
+
+.main-content-block {
+  display: flex;
+  padding: 20px;
+  align-items: center;
+}

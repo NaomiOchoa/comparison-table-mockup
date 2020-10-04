@@ -28,15 +28,17 @@ function App({
   return (
     <div className="App">
       <Header />
-      <ChartSizeProvider>
-        <Chart
-          activeCriteria={activeCriteria}
-          activeProducts={activeProducts}
-          priceHigh={priceHigh}
-          priceLow={priceLow}
-        />
-      </ChartSizeProvider>
-      <Legend allProducts={allProducts} />
+      <div className="main-content-block">
+        <ChartSizeProvider>
+          <Legend allProducts={allProducts} />
+          <Chart
+            activeCriteria={activeCriteria}
+            activeProducts={activeProducts}
+            priceHigh={priceHigh}
+            priceLow={priceLow}
+          />
+        </ChartSizeProvider>
+      </div>
       <Criteria allCriteria={allCriteria} />
       <Footer />
     </div>

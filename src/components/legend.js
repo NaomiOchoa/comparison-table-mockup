@@ -8,6 +8,7 @@ import {
   unsetHero,
 } from "../store/products";
 import { Button } from "semantic-ui-react";
+import { useChartSize } from "../utils/ChartSizeProvider";
 
 function Legend({
   allProducts,
@@ -16,6 +17,8 @@ function Legend({
   heroProduct,
   unsetHero,
 }) {
+  const { height } = useChartSize();
+
   function enterEffect(prod) {
     if (prod.active) {
       heroProduct(prod.Model);
@@ -29,7 +32,7 @@ function Legend({
   }
 
   return (
-    <div className="product-legend">
+    <div className="product-legend" style={{ height: height }}>
       <ul className="legend-list">
         {allProducts.map((product) => {
           return (
