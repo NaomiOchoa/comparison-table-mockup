@@ -55,7 +55,7 @@ export const getProductData = () => async (dispatch) => {
       .get()
       .then(function (querySnapshot) {
         querySnapshot.forEach(function (doc) {
-          products.push({ ...doc.data(), active: true });
+          products.push({ ...doc.data() });
         });
       });
 
@@ -65,11 +65,13 @@ export const getProductData = () => async (dispatch) => {
       .range([0, 1]);
 
     const productsWithColor = products.map((prod, i) => {
+      // let active = prod.WirecutterPick;
       return {
         ...prod,
         color: d3.interpolateTurbo(convertColors(i)),
         fullColor: d3.interpolateTurbo(convertColors(i)),
         greyscale: d3.interpolateGreys(convertColors(i)),
+        active: true,
       };
     });
 

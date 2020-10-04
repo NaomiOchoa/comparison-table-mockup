@@ -1,13 +1,17 @@
 import React, { useEffect } from "react";
+import { connect } from "react-redux";
 import * as d3 from "d3";
 import { useChartSize } from "../utils/ChartSizeProvider";
+import { heroProduct, unsetHero } from "../store/products";
 import "./chart.css";
 
-export default function Chart({
+function Chart({
   activeCriteria,
   activeProducts,
   priceHigh,
   priceLow,
+  heroProduct,
+  unsetHero,
 }) {
   const chartRef = React.createRef();
   const containerRef = React.createRef();
@@ -185,14 +189,13 @@ export default function Chart({
         }
       })
       .on("mouseover", function (e) {
-        console.log("pageX: ", e.pageX, "width: ", width);
         return tooltip.style("visibility", "visible").html(
           `<h4>${e.target.__data__.model}</h4>
-             <p>${
-               e.target.__data__.notes
-                 ? e.target.__data__.notes
-                 : "$" + e.target.__data__.value
-             }</p>`
+          <p>${
+            e.target.__data__.notes
+              ? e.target.__data__.notes
+              : "$" + e.target.__data__.value
+          }</p>`
         );
       })
       .on("mousemove", function (event) {
@@ -232,3 +235,12 @@ export default function Chart({
     </section>
   );
 }
+
+const mapDispatch = (dispatch) => {
+  return {
+    heroProduct: (modelName) => dispatch(heroProduct(modelName)),
+    unsetHero: () => dispatch(unsetHero()),
+  };
+};
+
+export default connect(null, mapDispatch)(Chart);

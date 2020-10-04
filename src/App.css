@@ -65,15 +65,15 @@ footer > p {
   margin: 1em;
 }
 
-footer > p > a {
+a.footer-link {
   color: white;
   text-decoration: underline;
   text-decoration-color: #6085ff;
 }
 
-footer > p > a:active,
-footer > p > a:hover,
-footer > p > a:focus {
+a:active.footer-link,
+a:hover.footer-link,
+a:focus.footer-link {
   background-color: #6085ff;
   color: white;
 }
@@ -82,15 +82,15 @@ section {
   margin: 20px 20px 20px 20px;
 }
 
-a {
+a.header-link {
   color: #ef3737;
   text-decoration: underline;
   text-decoration-color: #6085ff;
 }
 
-a:active,
-a:hover,
-a:focus {
+a:active.header-link,
+a:hover.header-link,
+a:focus.header-link {
   background-color: #ef3737;
   color: white;
 }

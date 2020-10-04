@@ -7,6 +7,7 @@ export default function Header() {
       <h2>
         A visualization of Wirecutter's{" "}
         <a
+          className="header-link"
           target="_blank"
           rel="noopener noreferrer"
           href="https://cdn.thewirecutter.com/wp-content/uploads/2020/05/Snow-Boots_-Comparison-Table-Traction-Test-Comparison-Table_-Snow-Boots.pdf"
@@ -15,6 +16,7 @@ export default function Header() {
         </a>{" "}
         for:{" "}
         <a
+          className="header-link"
           target="_blank"
           rel="noopener noreferrer"
           href="https://www.nytimes.com/wirecutter/reviews/best-winter-boots-for-men-and-women/"
